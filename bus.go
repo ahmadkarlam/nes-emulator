@@ -1,7 +1,7 @@
 package main
 
 type Bus struct {
-	cpu CPU
+	cpu *CPU
 	ram [2048]uint8
 }
 
@@ -15,8 +15,8 @@ func (b *Bus) Write(address uint16, data uint8) {
 	}
 }
 
-func NewBus() Bus {
+func NewBus() *Bus {
 	b := Bus{}
 	b.cpu = NewCPU(&b)
-	return b
+	return &b
 }

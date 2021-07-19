@@ -1,7 +1,5 @@
 package main
 
-var defaultCPU = CPU{}
-
 const (
 	C uint8 = (1 << 0) // Carry Bit
 	Z uint8 = (1 << 1) // Zero
@@ -49,12 +47,12 @@ type CPU struct {
 	addressTemp uint16
 }
 
-func NewCPU(b *Bus) CPU {
+func NewCPU(bus *Bus) *CPU {
 	c := CPU{
-		bus: b,
+		bus: bus,
 	}
-	mappingLookupInstructionSet(c)
-	return c
+	mappingLookupInstructionSet(&c)
+	return &c
 }
 
 func (c *CPU) setFlag(flag uint8, value bool) {
@@ -63,16 +61,6 @@ func (c *CPU) setFlag(flag uint8, value bool) {
 	} else {
 		c.sr &= ^flag
 	}
-}
-
-func (c *CPU) read(address uint16) uint8 {
-	b := c.bus
-	return b.Read(address)
-}
-
-func (c *CPU) write(address uint16, data uint8) {
-	b := c.bus
-	b.Write(address, data)
 }
 
 func (c *CPU) Clock() {
@@ -99,7 +87,7 @@ func (c *CPU) doCycle() {
 
 // Instruction Set
 func (c *CPU) lda() uint8 {
-	c.ac = c.read(c.addressTemp)
+	c.ac = c.bus.Read(c.addressTemp)
 	c.setFlag(Z, c.ac == 0x00)
 	c.setFlag(N, (c.ac&0x80) > 0)
 	return 1
@@ -116,7 +104,7 @@ func (c *CPU) imm() uint8 {
 	return 0
 }
 
-func mappingLookupInstructionSet(c CPU) {
+func mappingLookupInstructionSet(c *CPU) {
 	lookup[0xA9] = instructionSet{
 		"LDA", c.imm, c.lda, 2,
 	}

@@ -1,16 +1,10 @@
 package main
 
-import "log"
-
 func main() {
 	nes := NewBus()
-	nes.cpu.write(0, 0xA9)
-	nes.cpu.write(1, 0x0C)
-	nes.cpu.write(2, 0x0D)
-	nes.cpu.write(0x0D, 0x0F)
-
-	log.Println(nes.cpu.read(0))
-	log.Println(nes.cpu.read(1))
+	nes.Write(0, 0xA9)
+	nes.Write(1, 0x0C)
+	nes.Write(2, 0x0D)
 
 	for {
 		nes.cpu.Clock()
@@ -19,6 +13,4 @@ func main() {
 			break
 		}
 	}
-
-	log.Printf("%v", nes.cpu.ac)
 }
